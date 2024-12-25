@@ -4,17 +4,42 @@
 
 :root {
   --foreground-rgb: 255, 255, 255;
-  --background-rgb: 17, 24, 39;
+  --background-start-rgb: 0, 0, 0;
+  --background-end-rgb: 0, 0, 0;
 }
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: rgb(var(--background-rgb));
+  background: linear-gradient(
+    to bottom,
+    rgb(var(--background-start-rgb)),
+    rgb(var(--background-end-rgb))
+  );
   overflow: hidden;
-  margin: 0;
-  padding: 0;
 }
 
-* {
-  box-sizing: border-box;
+@keyframes slide {
+  from {
+    background-position-x: 0;
+  }
+  to {
+    background-position-x: -100px;
+  }
 }
+
+@keyframes slide-slow {
+  from {
+    background-position-x: 0;
+  }
+  to {
+    background-position-x: -200px;
+  }
+}
+
+.animate-slide {
+  animation: slide 2s linear infinite;
+}
+
+.animate-slide-slow {
+  animation: slide-slow 4s linear infinite;
+} 

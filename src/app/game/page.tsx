@@ -2,9 +2,10 @@
 
 import { motion } from "framer-motion";
 import { useEffect, useState, useCallback, useMemo } from "react";
-import PixelCharacter from "@/components/PixelCharacter";
+// import PixelCharacter from "@/components/PixelCharacter";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import PixelCharacter from "../components/PixelCharacter";
 
 interface Couple {
   id: number;

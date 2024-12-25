@@ -253,7 +253,7 @@ function GameContent() {
 
       if (isColliding) {
         updateGameState({
-          angerLevel: Math.min(100, gameState.angerLevel + 10),
+          angerLevel: Math.min(100, gameState.angerLevel + 50),
         });
       }
       return isColliding;
@@ -786,7 +786,7 @@ function GameContent() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className='px-8 py-3 bg-blue-600 text-white rounded-lg font-bold w-full'
-                  onClick={() => router.push("/game")}
+                  onClick={() => router.push("/")}
                 >
                   재도전
                 </motion.button>

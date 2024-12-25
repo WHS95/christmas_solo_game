@@ -4,11 +4,13 @@ import { motion } from "framer-motion";
 import { useEffect, useState, useCallback, useMemo } from "react";
 import PixelCharacter from "@/components/PixelCharacter";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 interface Couple {
   id: number;
   yPosition: number;
   lane: number;
+  style: number;
 }
 
 interface StageInfo {
@@ -28,18 +30,18 @@ const STAGES: StageInfo[] = [
     targetCouples: 10,
     title: "초저녁",
     message: "아... 오늘도 야근이라 늦었네. 빨리 가야지",
-    background: "#4B5563", // 노을진 하늘
-    spawnInterval: 1000,
+    background: "#4B5563",
+    spawnInterval: 800,
     maxCouplesAtOnce: 1,
-    moveSpeed: 1.5, // 기본 속도의 130%
+    moveSpeed: 1.5,
   },
   {
     id: 2,
     targetCouples: 20,
     title: "저녁",
     message: "헉... 점점 커플이 많아지는데?",
-    background: "#1F2937", // 어두워진 하늘
-    spawnInterval: 800,
+    background: "#1F2937",
+    spawnInterval: 600,
     maxCouplesAtOnce: 2,
     moveSpeed: 1.7,
   },
@@ -48,8 +50,8 @@ const STAGES: StageInfo[] = [
     targetCouples: 30,
     title: "밤",
     message: "이제 진짜 마지막이다... 조금만 더!",
-    background: "#111827", // 깊어진 밤
-    spawnInterval: 500,
+    background: "#111827",
+    spawnInterval: 400,
     maxCouplesAtOnce: 3,
     moveSpeed: 1.9,
   },
@@ -101,14 +103,14 @@ export default function GamePage() {
         coupleYPosition <= 85;
 
       if (isColliding) {
-        setAngerLevel((prev) => Math.min(100, prev + 5));
+        setAngerLevel((prev) => Math.min(100, prev + 2));
       }
       return isColliding;
     },
     [gameStatus, playerLane]
   );
 
-  // 레인 위치 계산 메이제��션
+  // 레인 위치 계산 메이제션
   const getLanePosition = useMemo(
     () =>
       (lane: number): number => {
@@ -153,7 +155,7 @@ export default function GamePage() {
             setAvoidedCouples((prev) => {
               const newCount =
                 prev + (prevCouples.length - updatedCouples.length);
-              // 스테이지 ���리어 크
+              // 스테이지 리어 크
               if (newCount >= currentStage.targetCouples) {
                 const nextStageIndex =
                   STAGES.findIndex((s) => s.id === currentStage.id) + 1;
@@ -194,8 +196,9 @@ export default function GamePage() {
 
           const newCouples = pattern.map((lane, index) => ({
             id: Date.now() + index,
-            yPosition: -20 * index, // 약간의 간격을 두고 등장
+            yPosition: -20 * index,
             lane: lane,
+            style: Math.floor(Math.random() * 4),
           }));
 
           return [...prev, ...newCouples];
@@ -329,26 +332,16 @@ export default function GamePage() {
               className='text-center text-white'
             >
               <h2 className='text-3xl font-bold mb-4'>미션 성공!</h2>
-              <div className='relative w-full h-48 mb-8 bg-gray-800 rounded-lg overflow-hidden'>
-                <motion.div
-                  initial={{ x: -50 }}
-                  animate={{ x: 150 }}
-                  transition={{ duration: 2, ease: "easeInOut" }}
-                  className='absolute bottom-4 w-12 h-12'
-                >
-                  <PixelCharacter x={50} y={50} isPlayer={true} />
-                </motion.div>
-                <div
-                  className='absolute right-4 bottom-4 w-16 h-24 bg-gray-700'
-                  style={{
-                    clipPath: "polygon(0 15%, 100% 0, 100% 100%, 0 100%)",
-                  }}
+              <div className='relative w-full aspect-video mb-8 rounded-lg overflow-hidden'>
+                <Image
+                  src='/solo.jpg'
+                  alt='솔로의 승리'
+                  fill
+                  className='object-cover'
+                  priority
                 />
               </div>
-              <p className='mb-8 text-lg'>
-                "드디어 집이다! 오늘도 무사히 귀가 성공이야. 내일은 다른 길로
-                돌아가야겠다..."
-              </p>
+              <p className='mb-8 text-lg'>"... 인생...."</p>
               <p className='mb-4'>최종 점수: {Math.floor(score / 20)}</p>
               <motion.button
                 whileHover={{ scale: 1.05 }}
@@ -368,12 +361,10 @@ export default function GamePage() {
           <div className='mx-4 w-[90%] max-w-md bg-black/80 p-6 rounded-lg'>
             <div className='text-center text-white'>
               <h2 className='text-3xl font-bold mb-4 text-red-500'>
-                게임 오버...
+                게임 오버
               </h2>
-              <p className='mb-4'>분노를 이기지 못했습니다...</p>
-              <p className='mb-8'>
-                "역시 강남은 커플천국이야... 다음엔 택시를 타야겠다."
-              </p>
+              <p className='mb-4'>우리 모두 솔로였으면 좋겠어...</p>
+              <p className='mb-8'>"크리스마스 망해라..."</p>
               <p className='mb-4'>최종 점수: {Math.floor(score / 20)}</p>
               <motion.button
                 whileHover={{ scale: 1.05 }}
@@ -381,7 +372,7 @@ export default function GamePage() {
                 className='px-8 py-3 bg-blue-600 text-white rounded-lg font-bold w-full'
                 onClick={() => router.push("/")}
               >
-                다시 시작하기
+                크리스마스 다시 보내기
               </motion.button>
             </div>
           </div>
@@ -454,6 +445,7 @@ export default function GamePage() {
               x={getLanePosition(couple.lane)}
               y={couple.yPosition}
               isCouple={true}
+              coupleStyle={couple.style}
             />
           ))}
 

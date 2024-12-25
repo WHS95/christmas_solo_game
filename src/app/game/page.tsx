@@ -121,12 +121,12 @@ const STAGES: StageInfo[] = [
   },
   {
     id: 5,
-    targetCouples: 50,
+    targetCouples: 70,
     title: "저녁 6시",
     message: "이제 진짜 데이트 타임이구나... <br /> 빨리 집에 가자!",
     background: "linear-gradient(180deg, #191970 0%, #000033 100%)",
-    spawnInterval: 300,
-    maxCouplesAtOnce: 6,
+    spawnInterval: 400,
+    maxCouplesAtOnce: 7,
     moveSpeed: GAME_SPEED.VERY_FAST.COUPLE_SPEED,
     gameSpeed: GAME_SPEED.VERY_FAST,
   },
@@ -204,7 +204,7 @@ function GameContent() {
 
       if (hasCollision) {
         updateGameState({
-          angerLevel: Math.min(100, gameState.angerLevel + 50),
+          angerLevel: Math.min(100, gameState.angerLevel + 30),
         });
       }
 
@@ -253,7 +253,7 @@ function GameContent() {
 
       if (isColliding) {
         updateGameState({
-          angerLevel: Math.min(100, gameState.angerLevel + 50),
+          angerLevel: Math.min(100, gameState.angerLevel + 30),
         });
       }
       return isColliding;

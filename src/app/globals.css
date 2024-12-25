@@ -2,8 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --road-speed: 1s;
+  --building-speed: 8s;
+  --light-speed: 2s;
+  --road-start: 170px;
+}
+
 body {
   overflow: hidden;
+  perspective: 1000px;
 }
 
 .game-background {
@@ -11,28 +19,141 @@ body {
   background-size: 200% 200%;
 }
 
-@keyframes slide {
+@keyframes slideDown {
   from {
-    background-position-x: 0;
+    transform: translateY(-50%);
   }
   to {
-    background-position-x: -100px;
+    transform: translateY(0%);
   }
 }
 
-@keyframes slide-slow {
-  from {
-    background-position-x: 0;
-  }
-  to {
-    background-position-x: -200px;
-  }
+.game-container {
+  transform-style: preserve-3d;
+  perspective: 1000px;
 }
 
-.animate-slide {
-  animation: slide 2s linear infinite;
+/* 도로 컨테이너 */
+.road-container {
+  position: fixed;
+  top: var(--road-start);
+  left: 3%;
+  right: 3%;
+  bottom: 0;
+  transform: rotateX(60deg);
+  transform-origin: top;
+  background: #1a1a1a;
+  overflow: hidden;
+  height: calc(200vh - var(--road-start));
+  /* border-left: 4px solid #333;
+  border-right: 4px solid #333; */
 }
 
-.animate-slide-slow {
-  animation: slide-slow 4s linear infinite;
+/* 왼쪽 건물 */
+.buildings-left {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 3%;
+  height: 300vh;
+  transform: rotateX(30deg) rotateY(-5deg);
+  transform-origin: right top;
+  background: #222;
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* 오른쪽 건물 */
+.buildings-right {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 3%;
+  height: 300vh;
+  transform: rotateX(30deg) rotateY(5deg);
+  transform-origin: left top;
+  background: #222;
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* 건물 창문 효과 */
+.building-windows {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0%,
+    transparent 20%,
+    rgba(255, 255, 255, 0.1) 20%,
+    rgba(255, 255, 255, 0.1) 22%,
+    transparent 22%,
+    transparent 100%
+  ),
+  repeating-linear-gradient(
+    to right,
+    transparent 0%,
+    transparent 40%,
+    rgba(255, 255, 255, 0.1) 40%,
+    rgba(255, 255, 255, 0.1) 42%,
+    transparent 42%,
+    transparent 100%
+  );
+  background-size: 10px 20px;
+  animation: slideDown var(--building-speed) linear infinite;
+}
+
+/* 건물 그림자 효과 */
+.buildings-left::after,
+.buildings-right::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.5) 0%,
+    transparent 100%
+  );
+}
+
+.buildings-right::after {
+  background: linear-gradient(
+    to left,
+    rgba(0, 0, 0, 0.5) 0%,
+    transparent 100%
+  );
+
+}
+
+.road-lines {
+  position: absolute;
+  top: -100%;
+  left: 0;
+  right: 0;
+  height: 400%;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0%,
+    transparent 40%,
+    rgba(255, 255, 255, 0.5) 20%,
+    rgba(255, 255, 255, 0.5) 25%,
+    transparent 45%,
+    transparent 100%
+  );
+  background-size: 100% 500px;
+  animation: slideDown var(--road-speed) linear infinite;
+}
+.street-lights {
+  position: absolute;
+  top: -100%;
+  width: 100%;
+  height: 400%;
+  background-repeat: repeat-y;
+  animation: slideDown var(--light-speed) linear infinite;
+  opacity: 0.7;
 } 

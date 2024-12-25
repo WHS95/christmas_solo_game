@@ -28,7 +28,49 @@ interface StageInfo {
   spawnInterval: number;
   maxCouplesAtOnce: number;
   moveSpeed: number;
+  gameSpeed: {
+    ROAD_SPEED: number;
+    BUILDING_SPEED: number;
+    LIGHT_SPEED: number;
+    COUPLE_SPEED: number;
+  };
 }
+
+// 게임 속도 관련 상수
+const GAME_SPEED = {
+  SLOW: {
+    ROAD_SPEED: 3,
+    BUILDING_SPEED: 1,
+    LIGHT_SPEED: 4,
+    COUPLE_SPEED: 1.5,
+  },
+  NORMAL: {
+    ROAD_SPEED: 2.5,
+    BUILDING_SPEED: 1,
+    LIGHT_SPEED: 3,
+    COUPLE_SPEED: 2.0,
+  },
+  FAST: {
+    ROAD_SPEED: 2,
+    BUILDING_SPEED: 1,
+    LIGHT_SPEED: 2.4,
+    COUPLE_SPEED: 2.5,
+  },
+  VERY_FAST: {
+    ROAD_SPEED: 1.5,
+    BUILDING_SPEED: 1,
+    LIGHT_SPEED: 2,
+    COUPLE_SPEED: 3.0,
+  },
+};
+
+// 게임 상수 추가
+const GAME_CONSTANTS = {
+  ROAD_START: 20, // 도로 시작 위치 (y position)
+  PLAYER_POSITION: 80, // 플레이어 위치
+  COLLISION_START: 75, // 충돌 감지 시작 위치
+  COLLISION_END: 85, // 충돌 감지 종료 위치
+};
 
 const STAGES: StageInfo[] = [
   {
@@ -36,50 +78,55 @@ const STAGES: StageInfo[] = [
     targetCouples: 10,
     title: "아침 8시",
     message: "아침부터 커플이 있네...<br /> 출근길부터 피해가자...",
-    background: "linear-gradient(180deg, #87CEEB 0%, #B0E0E6 100%)",
+    background: "linear-gradient(180deg, #FFB6C1 0%, #87CEEB 100%)",
     spawnInterval: 800,
     maxCouplesAtOnce: 3,
-    moveSpeed: 1.5,
+    moveSpeed: GAME_SPEED.SLOW.COUPLE_SPEED,
+    gameSpeed: GAME_SPEED.SLOW,
   },
   {
     id: 2,
     targetCouples: 20,
     title: "점심 12시",
     message: "헉... 점심 데이트 타임이네? <br /> 밥 먹으러 가는데 방해되게...",
-    background: "linear-gradient(180deg, #4682B4 0%, #87CEEB 100%)",
+    background: "linear-gradient(180deg, #87CEEB 0%, #4682B4 100%)",
     spawnInterval: 700,
     maxCouplesAtOnce: 3,
-    moveSpeed: 1.8,
+    moveSpeed: GAME_SPEED.NORMAL.COUPLE_SPEED,
+    gameSpeed: GAME_SPEED.NORMAL,
   },
   {
     id: 3,
     targetCouples: 30,
     title: "오후 2시",
     message: "회사 앞이 데이트 존이었어...? <br /> 회의 가는 길인데...",
-    background: "linear-gradient(180deg, #4169E1 0%, #4682B4 100%)",
+    background: "linear-gradient(180deg, #4682B4 0%, #2F4F4F 100%)",
     spawnInterval: 600,
     maxCouplesAtOnce: 4,
-    moveSpeed: 2.0,
+    moveSpeed: GAME_SPEED.FAST.COUPLE_SPEED,
+    gameSpeed: GAME_SPEED.FAST,
   },
   {
     id: 4,
     targetCouples: 40,
     title: "퇴근 4시",
-    message: "드디어 퇴근! <br /> 근데 이 시간에 커플이 왜이렇게 많아...",
-    background: "linear-gradient(180deg, #191970 0%, #4169E1 100%)",
+    message: "디어 퇴근! <br /> 근데 이 시간에 커플이 왜이렇게 많아...",
+    background: "linear-gradient(180deg, #2F4F4F 0%, #191970 100%)",
     spawnInterval: 500,
     maxCouplesAtOnce: 4,
-    moveSpeed: 2.5,
+    moveSpeed: GAME_SPEED.FAST.COUPLE_SPEED,
+    gameSpeed: GAME_SPEED.FAST,
   },
   {
     id: 5,
     targetCouples: 50,
     title: "저녁 6시",
     message: "이제 진짜 데이트 타임이구나... <br /> 빨리 집에 가자!",
-    background: "linear-gradient(180deg, #000033 0%, #191970 100%)",
+    background: "linear-gradient(180deg, #191970 0%, #000033 100%)",
     spawnInterval: 400,
     maxCouplesAtOnce: 5,
-    moveSpeed: 3.0,
+    moveSpeed: GAME_SPEED.VERY_FAST.COUPLE_SPEED,
+    gameSpeed: GAME_SPEED.VERY_FAST,
   },
 ];
 
@@ -180,7 +227,7 @@ function GameContent() {
 
           const newCouples = pattern.map((lane, index) => ({
             id: Date.now() + index,
-            yPosition: -25 * index,
+            yPosition: 0 - 25 * index, // 도로 시작 위치에서 시작하고 간격 유지
             lane: lane,
             style: Math.floor(Math.random() * 4),
           }));
@@ -208,8 +255,8 @@ function GameContent() {
 
       const isColliding =
         coupleLane === playerLane &&
-        coupleYPosition >= 75 &&
-        coupleYPosition <= 85;
+        coupleYPosition >= GAME_CONSTANTS.COLLISION_START &&
+        coupleYPosition <= GAME_CONSTANTS.COLLISION_END;
 
       if (isColliding) {
         setAngerLevel((prev) => Math.min(100, prev + 5));
@@ -269,19 +316,14 @@ function GameContent() {
             setAvoidedCouples((prev) => {
               const newCount =
                 prev + (prevCouples.length - updatedCouples.length);
-              // 스테이지 클리어 체크
               if (newCount >= currentStage.targetCouples) {
                 const nextStageIndex =
                   STAGES.findIndex((s) => s.id === currentStage.id) + 1;
                 if (nextStageIndex < STAGES.length) {
-                  // 모든 커플 제거
                   setCouples([]);
-                  // 스테이지 메시지 표시 설정
                   setShowStageMessage(true);
-                  // 다음 스테이지로 전환
                   setCurrentStage(STAGES[nextStageIndex]);
                   setAvoidedCouples(0);
-                  // 4초 후에 메시지 숨기기
                   setTimeout(() => {
                     setShowStageMessage(false);
                   }, 1500);
@@ -366,12 +408,47 @@ function GameContent() {
   }, [angerLevel]);
 
   return (
-    <div
-      className='fixed inset-0 overflow-hidden game-background'
-      style={{
-        background: currentStage.background,
-      }}
-    >
+    <div className='relative w-full h-screen overflow-hidden game-container'>
+      <div
+        className='absolute inset-0 game-background'
+        style={
+          {
+            background: currentStage.background,
+            backgroundSize: "cover",
+            "--road-speed": `${currentStage.gameSpeed.ROAD_SPEED}s`,
+            "--building-speed": `${currentStage.gameSpeed.BUILDING_SPEED}s`,
+            "--light-speed": `${currentStage.gameSpeed.LIGHT_SPEED}s`,
+          } as React.CSSProperties
+        }
+      >
+        {/* 도시 배경 요소들 */}
+        <div className='absolute inset-0'>
+          {/* 왼쪽 건물 */}
+          <div className='buildings-left'>
+            <div className='building-windows' />
+          </div>
+
+          {/* 오른쪽 건물 */}
+          <div className='buildings-right'>
+            <div className='building-windows' />
+          </div>
+
+          {/* 도로 컨테이너 */}
+          <div className='road-container'>
+            {/* 도로 바닥 */}
+            <div className='absolute inset-0 bg-gray-800'>
+              {/* 도로 차선 */}
+              <div
+                className='road-lines'
+                style={{
+                  animationDuration: `var(--road-speed)`,
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
       {showStageMessage && (
         <div className='fixed inset-0 flex items-center justify-center z-40'>
           <motion.div
@@ -445,7 +522,7 @@ function GameContent() {
                 transition={{ duration: 0.5 }}
                 className='text-center text-white'
               >
-                <h2 className='text-3xl font-bold mb-4'>현실로 돌아왔다...</h2>
+                <h2 className='text-3xl font-bold mb-4'>현실로 아왔다...</h2>
                 <div className='relative w-full aspect-video mb-8 rounded-lg overflow-hidden'>
                   <Image
                     src='/solo.jpg'
@@ -556,32 +633,12 @@ function GameContent() {
         점수: {Math.floor(score / 20)}
       </div>
 
-      {/* 움직이는 배경 */}
-      <div className='absolute inset-0 overflow-hidden z-10'>
-        {/* 건물 배경 */}
-        <div
-          className='absolute inset-0 bg-repeat-x animate-slide'
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='200' viewBox='0 0 100 200' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='10' y='50' width='30' height='150' fill='%23334155'/%3E%3Crect x='60' y='80' width='30' height='120' fill='%23334155'/%3E%3C/svg%3E")`,
-            backgroundSize: "100px 200px",
-          }}
-        />
-        {/* 가로등 */}
-        <div
-          className='absolute inset-0 bg-repeat-x animate-slide-slow'
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='200' height='200' viewBox='0 0 200 200' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='95' y='50' width='10' height='150' fill='%23475569'/%3E%3Ccircle cx='100' cy='45' r='15' fill='%23FDE047' fill-opacity='0.3'/%3E%3C/svg%3E")`,
-            backgroundSize: "200px 200px",
-          }}
-        />
-      </div>
-
       {/* 게임 캐릭터들 */}
       <div className='absolute inset-0 z-20'>
         {/* 플레이어 캐릭터 */}
         <PixelCharacter
           x={getLanePosition(playerLane)}
-          y={80}
+          y={GAME_CONSTANTS.PLAYER_POSITION}
           isPlayer={true}
         />
 

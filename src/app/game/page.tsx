@@ -204,7 +204,7 @@ function GameContent() {
 
       if (hasCollision) {
         updateGameState({
-          angerLevel: Math.min(100, gameState.angerLevel + 30),
+          angerLevel: Math.min(100, gameState.angerLevel + 60),
         });
       }
 
@@ -253,7 +253,7 @@ function GameContent() {
 
       if (isColliding) {
         updateGameState({
-          angerLevel: Math.min(100, gameState.angerLevel + 30),
+          angerLevel: Math.min(100, gameState.angerLevel + 50),
         });
       }
       return isColliding;

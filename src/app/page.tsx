@@ -34,6 +34,17 @@ export default function Home() {
         >
           게임 시작
         </motion.button>
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className='mt-4 px-8 py-3 bg-green-500 text-white rounded-lg font-bold hover:bg-green-700 transition-colors'
+          onClick={() => {
+            navigator.clipboard.writeText(window.location.origin);
+            alert("링크가 복사되었습니다! 솔로 친구에게 공유해보세요 😊");
+          }}
+        >
+          솔로 친구에게 공유하기
+        </motion.button>
 
         <div className='absolute bottom-[-80px] left-1/2 transform -translate-x-1/2'>
           <a

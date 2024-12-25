@@ -35,7 +35,7 @@ const STAGES: StageInfo[] = [
     id: 1,
     targetCouples: 10,
     title: "초저녁",
-    message: "퇴근 시간이라 커플이 좀 있겠지...<br /> 무난하게 피해가자...",
+    message: "퇴근 시간이라 커플이 좀 있겠지...<br /> 얼른 집에 가야지...",
     background: "#4B5563",
     spawnInterval: 800,
     maxCouplesAtOnce: 2,
@@ -45,8 +45,7 @@ const STAGES: StageInfo[] = [
     id: 2,
     targetCouples: 30,
     title: "저녁",
-    message:
-      "헉... 벌써 데이트 타임이네? <br /> 이러다 나만 솔로인거 들키겠어...",
+    message: "헉... 벌써 저녁이네? <br /> 이러다 나만 솔로인 거 들키겠어...",
     background: "#1F2937",
     spawnInterval: 600,
     maxCouplesAtOnce: 3,
@@ -57,7 +56,7 @@ const STAGES: StageInfo[] = [
     targetCouples: 60,
     title: "밤",
     message:
-      "크리스마스 이브라 그런가... <br /> 세상이 커플천국이잖아! <br /> 제발 집까지만...",
+      "크리스마스 싫어!!!. <br /> 세상이 커플천국이잖아! <br /> 더 빨리 집에가자",
     background: "#111827",
     spawnInterval: 400,
     maxCouplesAtOnce: 4,

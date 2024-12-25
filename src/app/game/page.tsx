@@ -34,33 +34,52 @@ const STAGES: StageInfo[] = [
   {
     id: 1,
     targetCouples: 10,
-    title: "초저녁",
-    message: "퇴근 시간이라 커플이 좀 있겠지...<br /> 얼른 집에 가야지...",
-    background: "#4B5563",
+    title: "아침 8시",
+    message: "아침부터 커플이 있네...<br /> 출근길부터 피해가자...",
+    background: "linear-gradient(180deg, #87CEEB 0%, #B0E0E6 100%)",
     spawnInterval: 800,
-    maxCouplesAtOnce: 2,
-    moveSpeed: 1.8,
+    maxCouplesAtOnce: 3,
+    moveSpeed: 1.5,
   },
   {
     id: 2,
-    targetCouples: 30,
-    title: "저녁",
-    message: "헉... 벌써 저녁이네? <br /> 이러다 나만 솔로인 거 들키겠어...",
-    background: "#1F2937",
-    spawnInterval: 600,
+    targetCouples: 20,
+    title: "점심 12시",
+    message: "헉... 점심 데이트 타임이네? <br /> 밥 먹으러 가는데 방해되게...",
+    background: "linear-gradient(180deg, #4682B4 0%, #87CEEB 100%)",
+    spawnInterval: 700,
     maxCouplesAtOnce: 3,
-    moveSpeed: 2.0,
+    moveSpeed: 1.8,
   },
   {
     id: 3,
-    targetCouples: 60,
-    title: "밤",
-    message:
-      "크리스마스 싫어!!!. <br /> 세상이 커플천국이잖아! <br /> 더 빨리 집에가자",
-    background: "#111827",
-    spawnInterval: 400,
+    targetCouples: 30,
+    title: "오후 2시",
+    message: "회사 앞이 데이트 존이었어...? <br /> 회의 가는 길인데...",
+    background: "linear-gradient(180deg, #4169E1 0%, #4682B4 100%)",
+    spawnInterval: 600,
+    maxCouplesAtOnce: 4,
+    moveSpeed: 2.0,
+  },
+  {
+    id: 4,
+    targetCouples: 40,
+    title: "퇴근 4시",
+    message: "드디어 퇴근! <br /> 근데 이 시간에 커플이 왜이렇게 많아...",
+    background: "linear-gradient(180deg, #191970 0%, #4169E1 100%)",
+    spawnInterval: 500,
     maxCouplesAtOnce: 4,
     moveSpeed: 2.5,
+  },
+  {
+    id: 5,
+    targetCouples: 50,
+    title: "저녁 6시",
+    message: "이제 진짜 데이트 타임이구나... <br /> 빨리 집에 가자!",
+    background: "linear-gradient(180deg, #000033 0%, #191970 100%)",
+    spawnInterval: 400,
+    maxCouplesAtOnce: 5,
+    moveSpeed: 3.0,
   },
 ];
 
@@ -348,8 +367,10 @@ function GameContent() {
 
   return (
     <div
-      className='fixed inset-0 overflow-hidden transition-colors duration-1000'
-      style={{ backgroundColor: currentStage.background }}
+      className='fixed inset-0 overflow-hidden game-background'
+      style={{
+        background: currentStage.background,
+      }}
     >
       {showStageMessage && (
         <div className='fixed inset-0 flex items-center justify-center z-40'>
@@ -508,97 +529,94 @@ function GameContent() {
         </div>
       )}
 
-      {/* 기존 UI 컴포넌트들... */}
-      <div className='fixed inset-0 bg-gray-900 overflow-hidden'>
-        {/* 스테이지 정보 */}
-        <div className='absolute top-4 left-0 right-0 flex flex-col items-center text-white z-30'>
-          <div className='text-lg font-bold'>{currentStage.title}</div>
-          <div className='text-sm mt-1'>
-            피한 커플: {avoidedCouples} / {currentStage.targetCouples}
-          </div>
+      {/* 스테이지 정보 */}
+      <div className='absolute top-4 left-0 right-0 flex flex-col items-center text-white z-30'>
+        <div className='text-lg font-bold'>{currentStage.title}</div>
+        <div className='text-sm mt-1'>
+          피한 커플: {avoidedCouples} / {currentStage.targetCouples}
         </div>
+      </div>
 
-        {/* 분노 게이지 */}
-        <div className='absolute top-20 left-4 right-4 flex items-center gap-2 z-30 bg-black/50 p-2 rounded-lg'>
-          <div className='flex-1 h-4 bg-gray-700 rounded-full overflow-hidden'>
-            <motion.div
-              className='h-full bg-red-600'
-              style={{ width: `${angerLevel}%` }}
-              animate={{ width: `${angerLevel}%` }}
-            />
-          </div>
-          <div className='text-white font-bold min-w-[3rem] text-right'>
-            {Math.floor(angerLevel)}%
-          </div>
-        </div>
-
-        {/* 점수 */}
-        <div className='absolute top-36 left-4 text-white z-30'>
-          점수: {Math.floor(score / 20)}
-        </div>
-
-        {/* 움직이는 경 */}
-        <div className='absolute inset-0 overflow-hidden z-10'>
-          {/* 건물 배경 */}
-          <div
-            className='absolute inset-0 bg-repeat-x animate-slide'
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='200' viewBox='0 0 100 200' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='10' y='50' width='30' height='150' fill='%23334155'/%3E%3Crect x='60' y='80' width='30' height='120' fill='%23334155'/%3E%3C/svg%3E")`,
-              backgroundSize: "100px 200px",
-            }}
-          />
-          {/* 가로등 */}
-          <div
-            className='absolute inset-0 bg-repeat-x animate-slide-slow'
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='200' height='200' viewBox='0 0 200 200' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='95' y='50' width='10' height='150' fill='%23475569'/%3E%3Ccircle cx='100' cy='45' r='15' fill='%23FDE047' fill-opacity='0.3'/%3E%3C/svg%3E")`,
-              backgroundSize: "200px 200px",
-            }}
+      {/* 분노 게이지 */}
+      <div className='absolute top-20 left-4 right-4 flex items-center gap-2 z-30 bg-black/50 p-2 rounded-lg'>
+        <div className='flex-1 h-4 bg-gray-700 rounded-full overflow-hidden'>
+          <motion.div
+            className='h-full bg-red-600'
+            style={{ width: `${angerLevel}%` }}
+            animate={{ width: `${angerLevel}%` }}
           />
         </div>
+        <div className='text-white font-bold min-w-[3rem] text-right'>
+          {Math.floor(angerLevel)}%
+        </div>
+      </div>
 
-        {/* 게임 캐릭터들 */}
-        <div className='absolute inset-0 z-20'>
-          {/* 플레이어 캐릭터 */}
+      {/* 점수 */}
+      <div className='absolute top-36 left-4 text-white z-30'>
+        점수: {Math.floor(score / 20)}
+      </div>
+
+      {/* 움직이는 배경 */}
+      <div className='absolute inset-0 overflow-hidden z-10'>
+        {/* 건물 배경 */}
+        <div
+          className='absolute inset-0 bg-repeat-x animate-slide'
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='200' viewBox='0 0 100 200' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='10' y='50' width='30' height='150' fill='%23334155'/%3E%3Crect x='60' y='80' width='30' height='120' fill='%23334155'/%3E%3C/svg%3E")`,
+            backgroundSize: "100px 200px",
+          }}
+        />
+        {/* 가로등 */}
+        <div
+          className='absolute inset-0 bg-repeat-x animate-slide-slow'
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='200' height='200' viewBox='0 0 200 200' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='95' y='50' width='10' height='150' fill='%23475569'/%3E%3Ccircle cx='100' cy='45' r='15' fill='%23FDE047' fill-opacity='0.3'/%3E%3C/svg%3E")`,
+            backgroundSize: "200px 200px",
+          }}
+        />
+      </div>
+
+      {/* 게임 캐릭터들 */}
+      <div className='absolute inset-0 z-20'>
+        {/* 플레이어 캐릭터 */}
+        <PixelCharacter
+          x={getLanePosition(playerLane)}
+          y={80}
+          isPlayer={true}
+        />
+
+        {/* 커플 NPC들 */}
+        {couples.map((couple) => (
           <PixelCharacter
-            x={getLanePosition(playerLane)}
-            y={80}
-            isPlayer={true}
+            key={couple.id}
+            x={getLanePosition(couple.lane)}
+            y={couple.yPosition}
+            isCouple={true}
+            coupleStyle={couple.style}
           />
+        ))}
+      </div>
 
-          {/* 커플 NPC들 */}
-          {couples.map((couple) => (
-            <PixelCharacter
-              key={couple.id}
-              x={getLanePosition(couple.lane)}
-              y={couple.yPosition}
-              isCouple={true}
-              coupleStyle={couple.style}
-            />
-          ))}
-        </div>
-
-        {/* 모바일 컨트롤 */}
-        <div className='absolute bottom-0 inset-x-0 h-32 flex justify-between p-4 z-30'>
-          <button
-            className='w-1/3 h-full bg-white/10 rounded-lg active:bg-white/20 text-white text-4xl'
-            onClick={() => handleTouchControl("left")}
-          >
-            ←
-          </button>
-          <button
-            className='w-1/3 h-full bg-white/10 rounded-lg active:bg-white/20 text-white text-4xl'
-            onClick={() => handleTouchControl("right")}
-          >
-            →
-          </button>
-        </div>
+      {/* 모바일 컨트롤 */}
+      <div className='absolute bottom-0 inset-x-0 h-32 flex justify-between p-4 z-30'>
+        <button
+          className='w-1/3 h-full bg-white/10 rounded-lg active:bg-white/20 text-white text-4xl'
+          onClick={() => handleTouchControl("left")}
+        >
+          ←
+        </button>
+        <button
+          className='w-1/3 h-full bg-white/10 rounded-lg active:bg-white/20 text-white text-4xl'
+          onClick={() => handleTouchControl("right")}
+        >
+          →
+        </button>
       </div>
     </div>
   );
 }
 
-// 메인 컴포��트
+// 메인 컴포넌트
 export default function GamePage() {
   return <GameComponent />;
 }
